@@ -4,6 +4,7 @@ const Genis = require("../models/Genis");
 const Update = require("../models/Update");
 const Delete = require("../models/Delete");
 const Tx = require("../models/Transaction");
+const _ = require('lodash');
 
 
 // Ethereum configuration
@@ -41,9 +42,37 @@ const time_converter = (time) =>{
   return date1.toUTCString()
 }
 
+function parseJson(Resp){
+  const results = [];
+  var parameters = ['spends','time','memo'];
+  Object.keys(Resp).forEach((paramValues, paramIndex) => {
+    const paramName = parameters[paramIndex];
+    Resp[paramValues].forEach((paramValue, itemIndex) =>{
+      const item = _.merge({}, _.get(results, [itemIndex], {}));
+      if (paramIndex == 0){
+        item[paramName] = paramValue;
+
+      }
+
+      else if(paramIndex == 1){
+        item[paramName] = time_converter(paramValue);
+
+      }
+
+      else if(paramIndex == 2){
+        item[paramName] = web3.utils.hexToUtf8(paramValue);
+
+      }
+
+      results[itemIndex] = item;
+    })
+  })
+  return results;
+}
+
 
 // get account information
-router.get('/getinfo/:id', function(req,res){
+router.get('/getinfo/:id', function(req,res,next){
 
 
   var number = req.params.id;
@@ -51,8 +80,9 @@ router.get('/getinfo/:id', function(req,res){
     case "id:1":{
 
       mycontract.methods.getEvent(u1_address).call().then(function(Resp){
-        res.send(Resp);
-      })
+        console.log(parseJson(Resp));
+        res.send(parseJson(Resp));
+      }).catch(next)
       break;
     }
 
@@ -60,7 +90,8 @@ router.get('/getinfo/:id', function(req,res){
 
 
       mycontract.methods.getEvent(u2_address).call().then(function(Resp){
-        res.send(Resp);
+        console.log(parseJson(Resp));
+        res.send(parseJson(Resp));
       })
       break;
     }
@@ -68,7 +99,8 @@ router.get('/getinfo/:id', function(req,res){
     case "id:3":{
 
       mycontract.methods.getEvent(u3_address).call().then(function(Resp){
-        res.send(Resp);
+        console.log(parseJson(Resp));
+        res.send(parseJson(Resp));
       })
 
       break;
@@ -123,10 +155,11 @@ router.get('/getbalance/:id', function(req,res){
 //post information
 
 router.post('/create', function(req,res,next){
+  console.log("gotrequest");
   Genis.create(req.body).then(function(data){
 
     var getData = mycontract.methods.addEvent(web3.utils.asciiToHex(data.memo),data.payment).encodeABI();
-
+    console.log("gotdata");
     var signed_transaction = web3.eth.accounts.signTransaction(
 
       {
@@ -136,6 +169,7 @@ router.post('/create', function(req,res,next){
       }, data.privatekey).then(function(raw){
 
       web3.eth.sendSignedTransaction(raw[Object.keys(raw)[4]]).on('receipt', function(result){
+        console.log(result);
         res.send(result);
     })
 

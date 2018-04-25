@@ -10,8 +10,8 @@
 
         <h1 class="title">REST API Qiibee</h1>
         <div id="homepage">
-            <h1>Hire a ninja in your area!</h1>
-            <div id="ninjas"></div>
+            <h1>Editing board</h1>
+            <div id="Qiibee"></div>
         </div>
 
         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
@@ -20,52 +20,89 @@
 
         <!-- Create React Component -->
         <script type="text/babel">
-        var Ninjas = React.createClass({
-            getInitialState: function(){
-                return({
-                    ninjas: []
-                });
-            },
-            render: function(){
-                var ninjas = this.state.ninjas;
-                ninjas = ninjas.map(function(ninja, index){
-                    return(
-                        <li key={index}>
-                            <span className={ninja.obj.available}></span>
-                            <span className="name">{ninja.obj.name}</span>
-                            <span className="rank">{ninja.obj.rank}</span>
-                            <span className="dist">{Math.floor(ninja.dis / 1000)} km</span>
-                        </li>
-                    );
-                });
+
+        var Balance = React.createClass({
+          render: function(){
+
                 return(
-                    <div id="ninja-container">
-                        <form id="search" onSubmit={this.handleSubmit}>
-                            <label>Enter your Latitude:</label>
-                            <input type="text" ref="lat" placeholder="latitude" required />
-                            <label>Enter your Longitude:</label>
-                            <input type="text" ref="lng" placeholder="longitude" required />
-                            <input type="submit" value="Find Ninjas" />
+                    <div id="control-container">
+
+                    <form id="account" onSubmit={this.accountSubmit}>
+
+                      <label>Enter your account:</label>
+                      <input type="text" ref="account" placeholder="enter from 1 to 3" required />
+                      <input type="submit" value="Log in" />
+
+                    </form>
+
+                        <form id="create" onSubmit={this.handleCreate}>
+
+                            <label>Enter your memo:</label>
+                            <input type="text" ref="memo" placeholder="memo" required />
+                            <label>Enter your payment for this</label>
+                            <input type="number" ref="spends" placeholder="your spending" required />
+
+                            <input type="text" ref="key" placeholder="enter your privatekey" required />
+                            <input type="submit" value="create" />
+
                         </form>
-                        <ul>{ninjas}</ul>
+
+                        <form id="update" onSubmit={this.handleUpdate}>
+                            <label>Enter the index you want to change:</label>
+                            <input type="text" ref="lat" placeholder="index" required />
+                            <label>Enter your memo for change:</label>
+                            <input type="text" ref="lat" placeholder="memo" required />
+                            <label>your payment for change:</label>
+                            <input type="text" ref="lng" placeholder="your spending" required />
+                            <input type="submit" value="update" />
+                        </form>
+
+                        <form id="delete" onSubmit={this.handleDelete}>
+                            <label>Enter the index you want to delete:</label>
+                            <input type="text" ref="lat" placeholder="index" required />
+                            <input type="submit" value="delete" />
+                        </form>
+
+
                     </div>
                 );
             },
-            handleSubmit: function(e){
+
+
+            // Account Selection
+
+            accountSubmit: function(e){
                 e.preventDefault();
-                var lng = this.refs.lng.value;
-                var lat = this.refs.lat.value;
-                fetch('/api/ninjas?lng=' + lng + '&lat=' + lat).then(function(data){
-                    return data.json();
-                }).then( json => {
-                    this.setState({
-                        ninjas: json
-                    });
-                    console.log(json);
-                });
+                var account = this.refs.account.value;
+                fetch('/getinfo/id:' + account).then(function(data){
+                  this.setState({costomers:data});
+                })
+            },
+
+
+            handleCreate: function(e){
+                e.preventDefault();
+                var memo = this.refs.memo.value;
+                var spends = this.refs.spends.value;
+                var privatekey = this.refs.key.value;
+                data = new Object();
+                data.memo = memo;
+                data.payment = spends;
+                data.privatekey = privatekey;
+
+                fetch('/create', {method:'POST', body:JSON.stringify(data)}).then(function(resp){
+                  return resp.json();
+                })
+
+
             }
+
+
+
+
+
         });
-        ReactDOM.render(<Ninjas />, document.getElementById('ninjas'));
+        ReactDOM.render(<Balance />, document.getElementById('Qiibee'));
         </script>
 
 
