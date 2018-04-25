@@ -25,6 +25,12 @@ var u3_account = web3.eth.accounts.privateKeyToAccount(u3_pk);
 var u3_address = u3_account[Object.keys(u3_account)[0]];
 
 
+
+var account1 = {privatekey:u1_pk, address:u1_address};
+var account2 = {privatekey:u2_pk, address:u2_address};
+var account3 = {privatekey:u3_pk, address:u3_address};
+
+
 // 时间转换
 const time_converter = (time) =>{
   date1 = new Date(time*1000);
@@ -111,7 +117,7 @@ function deleteEvent(index, private_key){
 
 
 
-getEvent(u1_address);
+//getEvent(u1_address);
 
 //addEvent("football",90,u1_pk);
 
