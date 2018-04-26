@@ -17,6 +17,9 @@
         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
         <script src="https://unpkg.com/react@15/dist/react.js"></script>
         <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+        <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js">
+
+        </script>
 
         <script type="text/babel">
 
@@ -28,7 +31,7 @@
 
                     <form id="account" onSubmit={this.accountSubmit}>
 
-                      <label>Enter your account:</label>
+                      <label>Get requiest account info:</label>
                       <input type="text" ref="account" placeholder="enter from 1 to 3" required />
                       <input type="submit" value="Log in" />
 
@@ -36,30 +39,30 @@
 
                         <form id="create" onSubmit={this.handleCreate}>
 
-                            <label>Enter your memo:</label>
-                            <input type="text" ref="memo" placeholder="memo" required />
-                            <label>Enter your payment for this</label>
-                            <input type="number" ref="spends" placeholder="your spending" required />
+                            <label>Post requiest to create spending:</label>
 
-                            <input type="text" ref="key" placeholder="enter your privatekey" required />
+                            <input type="text" ref="memo" placeholder="memo" required />
+                            <input type="text" ref="spends" placeholder="your spending" required />
+
+                            <input type="text" ref="keys" placeholder="enter your privatekey" required />
                             <input type="submit" value="create" />
 
                         </form>
 
                         <form id="update" onSubmit={this.handleUpdate}>
-                            <label>Enter the index you want to change:</label>
-                            <input type="text" ref="lat" placeholder="index" required />
-                            <label>Enter your memo for change:</label>
-                            <input type="text" ref="lat" placeholder="memo" required />
-                            <label>your payment for change:</label>
-                            <input type="number" ref="lng" placeholder="your spending" required />
-                            <input type="text" ref="key" placeholder="enter your privatekey" required />
+
+                            <label>Put request to edit:</label>
+                            <input type="text" ref="upd_index" placeholder="index" required />
+                            <input type="text" ref="upd_memo" placeholder="memo" required />
+                            <input type="text" ref="upd_spend" placeholder="your spending" required />
+                            <input type="text" ref="upd_key" placeholder="enter your privatekey" required />
                             <input type="submit" value="update" />
                         </form>
 
                         <form id="delete" onSubmit={this.handleDelete}>
-                            <label>Enter the index you want to delete:</label>
-                            <input type="text" ref="lat" placeholder="index" required />
+                            <label>Delete request to delete:</label>
+                            <input type="text" ref="delete_index" placeholder="index" required />
+                            <input type="text" ref="delete_key" placeholder="enter your privatekey" required />
                             <input type="submit" value="delete" />
                         </form>
 
@@ -84,16 +87,61 @@
                 e.preventDefault();
                 var memo = this.refs.memo.value;
                 var spends = this.refs.spends.value;
-                var privatekey = this.refs.key.value;
-                data = new Object();
-                data.memo = memo;
-                data.payment = spends;
-                data.privatekey = privatekey;
+                var privatekey = this.refs.keys.value;
 
-                fetch('/create', {method:'post', body:JSON.stringify(data)}).then(function(resp){
+                var data = new Object();
+                data.payment = parseInt(spends);
+                data.memo = memo;
+                data.privatekey = privatekey;
+                fetch('/create', {method:'POST', headers: {'Content-Type': 'application/json'}, body:(JSON.stringify(data))}).then(function(resp){
                   return resp.json();
                 })
-            }
+
+                /*$.ajax({
+                  "url": "/create",
+                  "type": "POST",
+                  "data":JSON.stringify(data),
+                  success: function() {
+                    alert('s')
+                  },
+                  error: function() {
+                    alert(JSON.stringify(data));
+                  }
+                })*/
+            },
+
+            handleUpdate: function(e){
+                e.preventDefault();
+
+                var data = new Object();
+                var memo = this.refs.upd_memo.value;
+                var spends = this.refs.upd_spend.value;
+                var privatekey = this.refs.upd_key.value;
+                var index = this.refs.upd_index.value;
+                data.updateIndex = parseInt(index);
+                data.payment = parseInt(spends);
+                data.memo = memo;
+                data.privatekey = privatekey;
+                fetch('/update', {method:'PUT', headers: {'Content-Type': 'application/json'}, body:(JSON.stringify(data))}).then(function(resp){
+                  return resp.json();
+                })
+              },
+
+
+              handleDelete: function(e){
+                  e.preventDefault();
+
+                  var data = new Object();
+                  var privatekey = this.refs.delete_key.value;
+                  var index = this.refs.delete_index.value;
+                  data.deleteIndex = parseInt(index);
+                  data.privatekey = privatekey;
+                  fetch('/delete', {method:'delete', headers: {'Content-Type': 'application/json'}, body:(JSON.stringify(data))}).then(function(resp){
+                    return resp.json();
+                  })
+                },
+
+
 
 
         });

@@ -42,6 +42,7 @@ const time_converter = (time) =>{
   return date1.toUTCString()
 }
 
+// parse json of arrays to arrays of jsons
 function parseJson(Resp){
   const results = [];
   var parameters = ['spends','time','memo'];
@@ -146,9 +147,8 @@ router.get('/getbalance/:id', function(req,res){
 
 
 //post information
-
 router.post('/create', function(req,res,next){
-  console.log("gotrequest");
+  console.log("Got create request at ");
   Genis.create(req.body).then(function(data){
 
     var getData = mycontract.methods.addEvent(web3.utils.asciiToHex(data.memo),data.payment).encodeABI();
@@ -174,7 +174,7 @@ router.post('/create', function(req,res,next){
 
 //update
 router.put('/update', function(req,res,next){
-
+  console.log("got update request ");
   Update.create(req.body).then(function(data){
 
     var getData = mycontract.methods.updateEvent(Number(data.updateIndex), web3.utils.asciiToHex(data.memo),data.payment).encodeABI();
@@ -191,7 +191,6 @@ router.put('/update', function(req,res,next){
         var tx = new Tx(result);
         tx.save();
         console.log(result);
-
         res.send(result);
     })
 
@@ -205,6 +204,7 @@ router.put('/update', function(req,res,next){
 //delete
 router.delete('/delete', function(req,res){
 
+  console.log("Got Delete request " );
 
   Delete.create(req.body).then(function(data){
 
@@ -220,7 +220,6 @@ router.delete('/delete', function(req,res){
 
       web3.eth.sendSignedTransaction(raw[Object.keys(raw)[4]]).on('receipt', function(result){
         console.log(result);
-
         res.send(result);
     })
 

@@ -9,17 +9,14 @@ var abi = require('./abi'); // if this can be sent over would be great
 var contractAddress = '0xFf59756E5A7A3CE03B6658BAB03a3a11C564abFd';
 var mycontract = new web3.eth.Contract(abi, contractAddress);
 
-// 用户账号1
 var u1_pk = "0x123ce564d427a3319b6536bbcef1390d69395b06es6c481954e971d960fe8907";
 var u1_account = web3.eth.accounts.privateKeyToAccount(u1_pk);
 var u1_address = u1_account[Object.keys(u1_account)[0]];
 
-// 用户账号2
 var u2_pk = "0x124ce564d427a3319b6536bccef1390d69395b06es6c481954e971d960fe8908";
 var u2_account = web3.eth.accounts.privateKeyToAccount(u2_pk);
 var u2_address = u2_account[Object.keys(u2_account)[0]];
 
-// 用户账号3
 var u3_pk = "0x125ce564d427a3319b6536bdcef1390d69395b06es6c481954e971d960fe8909";
 var u3_account = web3.eth.accounts.privateKeyToAccount(u3_pk);
 var u3_address = u3_account[Object.keys(u3_account)[0]];
@@ -31,21 +28,18 @@ var account2 = {privatekey:u2_pk, address:u2_address};
 var account3 = {privatekey:u3_pk, address:u3_address};
 
 
-// 时间转换
 const time_converter = (time) =>{
   date1 = new Date(time*1000);
   return date1.toUTCString()
 }
 
 
-// 查余额
 web3.eth.getBalance(u3_address, function(e, result){
   console.log(web3.utils.fromWei(result, 'ether') + "ether");
 });
 
 
 
-// 增加条目 memo: 话费细节， spending：具体多少钱， private_key: 哪个账户
 function addEvent(memo,spending,private_key){
   var getData = mycontract.methods.addEvent(web3.utils.asciiToHex(memo),spending).encodeABI();
 
@@ -66,7 +60,6 @@ function addEvent(memo,spending,private_key){
 }
 
 
-// 收取数据
 function getEvent(address){
   mycontract.methods.getEvent(address).call().then(function(Resp){
     Resp[Object.keys(Resp)[0]].forEach((paramValues, paramIndex) => {
@@ -76,7 +69,6 @@ function getEvent(address){
 
 }
 
-// 更新， index的意思是，更新第几个
 function update(index, memo, spending, private_key){
   var getData = mycontract.methods.updateEvent(index, web3.utils.asciiToHex(memo),spending).encodeABI();
   var signed_transaction = web3.eth.accounts.signTransaction(
@@ -96,7 +88,6 @@ function update(index, memo, spending, private_key){
 }
 
 
-// 删除
 function deleteEvent(index, private_key){
   var getData = mycontract.methods.deleteEvent(index).encodeABI();
   var signed_transaction = web3.eth.accounts.signTransaction(
