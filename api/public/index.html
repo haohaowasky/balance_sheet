@@ -18,7 +18,6 @@
         <script src="https://unpkg.com/react@15/dist/react.js"></script>
         <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
 
-        <!-- Create React Component -->
         <script type="text/babel">
 
         var Balance = React.createClass({
@@ -53,7 +52,8 @@
                             <label>Enter your memo for change:</label>
                             <input type="text" ref="lat" placeholder="memo" required />
                             <label>your payment for change:</label>
-                            <input type="text" ref="lng" placeholder="your spending" required />
+                            <input type="number" ref="lng" placeholder="your spending" required />
+                            <input type="text" ref="key" placeholder="enter your privatekey" required />
                             <input type="submit" value="update" />
                         </form>
 
@@ -90,15 +90,10 @@
                 data.payment = spends;
                 data.privatekey = privatekey;
 
-                fetch('/create', {method:'POST', body:JSON.stringify(data)}).then(function(resp){
+                fetch('/create', {method:'post', body:JSON.stringify(data)}).then(function(resp){
                   return resp.json();
                 })
-
-
             }
-
-
-
 
 
         });

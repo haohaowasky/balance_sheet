@@ -108,13 +108,6 @@ router.get('/getinfo/:id', function(req,res,next){
   }
 
 
-
-  // balance.geoNear(
-  //     {type: 'Point', coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)]},
-  //     {maxDistance: 100000, spherical: true}
-  // ).then(function(data){
-  //     res.send(data);
-  // }).catch(next);
 });
 
 
@@ -197,6 +190,8 @@ router.put('/update', function(req,res,next){
       web3.eth.sendSignedTransaction(raw[Object.keys(raw)[4]]).on('receipt', function(result){
         var tx = new Tx(result);
         tx.save();
+        console.log(result);
+
         res.send(result);
     })
 
@@ -224,6 +219,8 @@ router.delete('/delete', function(req,res){
       }, data.privatekey).then(function(raw){
 
       web3.eth.sendSignedTransaction(raw[Object.keys(raw)[4]]).on('receipt', function(result){
+        console.log(result);
+
         res.send(result);
     })
 
