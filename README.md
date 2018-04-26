@@ -6,6 +6,8 @@ Rest API with NodeJs, React, Web3Js, Ethereum Smart Contract and MongoDB
 
 Node Resp should run the program.
 
+Go to: http://localhost:4000/index.html to open the react front end. Input the required data, and it will fetch the request to the API, and then print transaction receipt in the console. To check if it is CRUDed, click the log in buttun with an account number input, ex: 1
+
 A smart contract is deployed at Rinkeby network, you can check the transactions:
 https://rinkeby.etherscan.io/address/0xff59756e5a7a3ce03b6658bab03a3a11c564abfd
 
